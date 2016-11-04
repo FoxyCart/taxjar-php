@@ -8,10 +8,12 @@ class TaxJar {
   public function __construct($key) {
     if ($key) {
       $this->config = [
-        'base_uri' => 'https://api.taxjar.com/v2/',
-        'handler' => $this->errorHandler(),
-        'headers' => [
-          'Authorization' => 'Bearer ' . $key
+        'base_url' => 'https://api.taxjar.com/v2/',
+        //'handler' => $this->errorHandler(),
+        'defaults' => [
+          'headers' => [
+            'Authorization' => 'Bearer ' . $key
+          ]
         ]
       ];
       $this->client = new \GuzzleHttp\Client($this->config);
@@ -19,7 +21,7 @@ class TaxJar {
       throw new Exception('Please provide an API key.');
     }
   }
-  
+  /*
   private function errorHandler() {
     $handler = \GuzzleHttp\HandlerStack::create();
     $handler->push(\GuzzleHttp\Middleware::mapResponse(function($response) {
@@ -27,13 +29,13 @@ class TaxJar {
         $data = json_decode($response->getBody());
         throw new Exception(sprintf('%s %s – %s', $response->getStatusCode(), $data->error, $data->detail));
       }
-      
+
       return $response;
     }));
-    
+
     return $handler;
   }
-  
+  */
   private function refreshClient($config) {
     $this->client = new \GuzzleHttp\Client($config);
   }
@@ -42,7 +44,7 @@ class TaxJar {
     $this->config[$index] = $value;
     $this->refreshClient($this->config);
   }
-  
+
   public function getApiConfig($index) {
     if ($index) {
       return $this->config[$index];
